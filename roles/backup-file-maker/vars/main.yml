@@ -1,0 +1,9 @@
+---
+target_file: "***MISSING TARGET FILE***" # Variable must be passed in!!!!
+target_dir: "{{ lookup('pipe', 'dirname ' + target_file) }}"
+target_base: "{{ lookup('pipe', 'basename ' + target_file) }}"
+backup_dir: "{{ target_dir }}/.OLD"
+local_timestamp: "{{ lookup('pipe', 'date +%Y%m%d.%H%M%S') }}"
+remote_timestamp: "{{ ansible_date_time.year + ansible_date_time.month + ansible_date_time.day }}.{{ ansible_date_time.hour + ansible_date_time.minute + ansible_date_time.second }}"
+localuser: "{{ lookup('env', 'USER') }}"
+backup_file: "{{ backup_dir }}/{{ target_base }}.{{ remote_timestamp }}.{{ localuser }}"

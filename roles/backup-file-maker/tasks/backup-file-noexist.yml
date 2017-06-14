@@ -1,0 +1,5 @@
+---
+# This gets executed when the file to be backed up does not exist
+
+- name: "No exist message"
+  debug: msg="Skipping backup of [{{ target_file }}]. File does not exist."

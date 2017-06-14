@@ -1,0 +1,21 @@
+---
+# Tasks for making a dated file backup (see vars/ for variable definitions)
+
+- debug: msg="remote_timestamp = [{{ remote_timestamp }}]"
+
+- debug: msg="local_timestamp = [{{ local_timestamp }}]"
+
+- debug: msg="localuser = [{{ localuser }}]"
+
+- debug: msg="Attempting to backup [{{ target_file }}] ==> [{{ backup_file }}]"
+
+- name: "Check for existence of target file"
+  stat: "path={{ target_file }}"
+  register: filestat
+  always_run: yes
+
+- include: backup-file-exists.yml
+  when: filestat.stat.exists == True
+
+- include: backup-file-noexist.yml
+  when: filestat.stat.exists != True

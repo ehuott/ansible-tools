@@ -1,0 +1,13 @@
+---
+# Generic task for creating a dated backup of a file in a .OLD/ sub-directory
+
+- hosts: localhost
+  vars:
+    the_target_file: /tmp/.foo
+
+  roles:
+  - { role: backup-file-maker, target_file: "{{ the_target_file }}"  } 
+
+#  tasks:
+#    - name: Dummy
+#      debug: msg="Dummy message"
