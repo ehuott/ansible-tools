@@ -2,7 +2,7 @@
 # This gets included when the file to be backed up exists
 
 - name: "Create/verify backup dir: [{{ backup_dir }}]"
-  command: "mkdir {{ backup_dir }} creates={{ backup_dir }}"
+  file: "path={{ backup_dir }} state=directory"
 
 - name: "Backing up [{{ target_file }}] ==> [{{ backup_file }}]"
   command: "cp -p {{ target_file }} {{ backup_file }}"

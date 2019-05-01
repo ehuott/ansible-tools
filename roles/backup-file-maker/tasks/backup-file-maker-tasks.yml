@@ -12,7 +12,7 @@
 - name: "Check for existence of target file"
   stat: "path={{ target_file }}"
   register: filestat
-  always_run: yes
+  check_mode: no
 
 - include: backup-file-exists.yml
   when: filestat.stat.exists == True
