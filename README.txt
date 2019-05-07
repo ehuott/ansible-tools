@@ -10,7 +10,12 @@ Here's what there is so far (not much):
 
 * make-backup-file.yml:
 
-  An importable playbook to make a dated backup of a specified target file. Simpler than the role implementation. Playbook behavior can be controlled by pre-defining certain variables.
+  An importable playbook to make a dated backup of a specified target file. Playbook behavior can be controlled by pre-defining certain variables.
+
+* make-backup-file-tasks.xml
+
+  An importable task list to make a dated backup of a specified target file. Simpler and more flexible than the role implementation. It can be invoked from within a role.
+
 
 # Emacs variables below this line
 # Local Variables:

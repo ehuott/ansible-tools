@@ -1,0 +1,10 @@
+---
+# Run test of make-backup-file-tasks.yml
+
+- name: Make backup file with datestamp
+  hosts: localhost
+
+  tasks:
+  - import_tasks: make-backup-file-tasks.yml
+  vars:  
+    mbf_target_file: /tmp/foo

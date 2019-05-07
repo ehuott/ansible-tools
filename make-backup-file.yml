@@ -9,7 +9,7 @@
 #
 #   mbf_target_file - The full path to the file to be backed up.
 #
-# The following option variables may be defined:
+# The following optional variables may be defined:
 #
 #   mbf_become - Passed to the 'become' keyword. (Defaults to 'no'.)
 #
