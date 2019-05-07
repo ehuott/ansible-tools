@@ -1,0 +1,8 @@
+---
+# Run test of make-backup-file.yml playbook.
+
+- name: Test make-backup-file.yml
+  vars:
+    mbf_hosts: localhost
+    mbf_target_file: /tmp/foo
+  import_playbook: make-backup-file.yml

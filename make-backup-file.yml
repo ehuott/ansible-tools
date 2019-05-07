@@ -1,0 +1,62 @@
+---
+# Playbook to make a backup copy of a file with a datestamp in the backup
+# file name. Backup files are placed in a subdirectory named '.OLD' under
+# the directory containing the file to be backed up.
+#
+# NOTE: The following variables MUST be defined before invoking this playbook:
+#
+#   mbf_hosts - A valid list for the 'hosts' keyword.
+#
+#   mbf_target_file - The full path to the file to be backed up.
+#
+# The following option variables may be defined:
+#
+#   mbf_become - Passed to the 'become' keyword. (Defaults to 'no'.)
+#
+#   mbf_become_method - Passed to the 'become_method' keyword. (Default to 'sudo'.)
+
+- name: Make backup file with datestamp
+  hosts: "{{ mbf_hosts }}"
+  become: "{{ mbf_become | default('no') }}"
+  become_method: "{{ mbf_become_method | default('sudo') }}"
+
+  vars:
+    target_dir: "{{ lookup('pipe', 'dirname ' + mbf_target_file) }}"
+    target_base: "{{ lookup('pipe', 'basename ' + mbf_target_file) }}"
+    backup_dir: "{{ target_dir }}/.OLD"
+    local_timestamp: "{{ lookup('pipe', 'date +%Y%m%d.%H%M%S') }}"
+    remote_timestamp: "{{ ansible_date_time.year + ansible_date_time.month + ansible_date_time.day }}.{{ ansible_date_time.hour + ansible_date_time.minute + ansible_date_time.second }}"
+    localuser: "{{ lookup('env', 'USER') }}"
+    backup_file: "{{ backup_dir }}/{{ target_base }}.{{ remote_timestamp }}.{{ localuser }}"
+
+  tasks:
+    - name: Fail if mbf_target_file variable is undefined
+      fail: msg="Error! Required variable 'mbf_target_file' is undefined."
+      when: mbf_target_file is not defined
+
+    - debug: msg="remote_timestamp = [{{ remote_timestamp }}]"
+
+    - debug: msg="local_timestamp = [{{ local_timestamp }}]"
+
+    - debug: msg="localuser = [{{ localuser }}]"
+
+    - debug: msg="Attempting to backup [{{ mbf_target_file }}] ==> [{{ backup_file }}]"
+
+    - name: Check for existence of target file
+      stat: "path={{ mbf_target_file }}"
+      register: filestat
+      check_mode: no
+
+    - name: Target file exists
+      block:
+        - name: "Create/verify backup dir: [{{ backup_dir }}]"
+          file: "path={{ backup_dir }} state=directory"
+
+        - name: "Backing up [{{ mbf_target_file }}] ==> [{{ backup_file }}]"
+          command: "cp -p {{ mbf_target_file }} {{ backup_file }}"
+      when: filestat.stat.exists == True
+
+    - name: Target does not exist
+      block:
+        - debug: msg="Skipping backup of [{{ mbf_target_file }}]. File does not exist."
+      when: filestat.stat.exists == False
